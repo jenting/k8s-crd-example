@@ -9,6 +9,8 @@ An example of a custom Kubernetes controller that's only purpose is to watch for
 ```
 $ git clone https://github.com/hsiaoairplane/k8s-crd
 $ cd k8s-crd
+$ GO111MODULE=on go mod vendor
+$ GO111MODULE=on go mod verify
 $ make all
 ```
 
