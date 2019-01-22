@@ -1,0 +1,7 @@
+apiVersion: hsiaoairplane.io/v1
+kind: Health
+metadata:
+  name: example-health
+spec:
+  action: put
+  switch: true
