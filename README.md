@@ -32,3 +32,8 @@ $ make all
 2. kubectl port-forward $POD_NAME 8080:80
 3. curl -XGET http://127.0.0.1:8080/health
 4. curl -XPUT http://127.0.0.1:8080/health
+
+# Draft
+1. draft init
+2. draft up
+3. draft connect

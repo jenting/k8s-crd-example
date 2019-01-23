@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,49 +13,45 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/workqueue"
 
-	healthClientSet "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
+	clientset "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
 	healthInformerV1 "github.com/hsiaoairplane/k8s-crd/pkg/client/informers/externalversions/health/v1"
 )
 
-// retrieve the Kubernetes cluster client from outside of the cluster
-func getKubernetesClient(logger *zerolog.Logger) (kubernetes.Interface, healthClientSet.Interface) {
-	// construct the path to resolve to `~/.kube/config`
-	kubeConfigPath := os.Getenv("HOME") + "/.kube/config"
+var (
+	masterURL  string
+	kubeconfig string
+)
 
-	// create the config from the path
-	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
-	if err != nil {
-		logger.Fatal().Err(err).Msgf("getClusterConfig: %v", err)
-	}
-
-	// generate the client based off of the config
-	client, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		logger.Fatal().Err(err).Msgf("getClusterConfig: %v", err)
-	}
-
-	myresourceClient, err := healthClientSet.NewForConfig(config)
-	if err != nil {
-		logger.Fatal().Err(err).Msgf("getClusterConfig: %v", err)
-	}
-
-	logger.Info().Msgf("Successfully constructed k8s client")
-
-	return client, myresourceClient
+func init() {
+	flag.StringVar(&kubeconfig, "kubeconfig", "", "Path to a kubeconfig. Only required if out-of-cluster.")
+	flag.StringVar(&masterURL, "master", "", "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
 }
 
-// main code path
 func main() {
+	flag.Parse()
+
 	logger := zerolog.New(os.Stderr).With().Timestamp().Logger().Level(zerolog.InfoLevel)
 
-	// get the Kubernetes client for connectivity
-	client, myresourceClient := getKubernetesClient(&logger)
+	cfg, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
+	if err != nil {
+		logger.Fatal().Err(err).Msgf("Error building kubeconfig: %s", err.Error())
+	}
+
+	kubeClient, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		logger.Fatal().Err(err).Msgf("Error building kubernetes clientset: %s", err.Error())
+	}
+
+	healthClient, err := clientset.NewForConfig(cfg)
+	if err != nil {
+		logger.Fatal().Err(err).Msgf("Error building health clientset: %s", err.Error())
+	}
 
 	// retrieve our custom resource informer which was generated from
 	// the code generator and pass it the custom resource client, specifying
 	// we should be looking through all namespaces for listing and watching
 	informer := healthInformerV1.NewHealthInformer(
-		myresourceClient,
+		healthClient,
 		metaV1.NamespaceAll,
 		0,
 		cache.Indexers{},
@@ -109,7 +106,7 @@ func main() {
 	// and the handler
 	controller := Controller{
 		logger:    &logger,
-		clientset: client,
+		clientset: kubeClient,
 		informer:  informer,
 		queue:     queue,
 		handler:   &HealthHandler{&logger},

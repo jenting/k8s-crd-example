@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-all: codegen
+all:
 	go build
 
 clean:
