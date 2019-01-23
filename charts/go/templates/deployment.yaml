@@ -23,3 +23,11 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+---
+apiVersion: hsiaoairplane.io/v1
+kind: Health
+metadata:
+  name: example-health
+spec:
+  action: put
+  switch: true
