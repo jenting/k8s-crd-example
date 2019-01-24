@@ -14,7 +14,6 @@ import (
 // Handler interface contains the methods that are required
 type Handler interface {
 	Run(stopCh <-chan struct{}) error
-	// ObjectCreated(obj interface{})
 	ObjectDeleted(obj interface{})
 	ObjectUpdated(obj interface{})
 }
@@ -26,33 +25,26 @@ type HealthHandler struct {
 	put    bool
 }
 
+var methodEnabled = map[string]bool{
+	http.MethodGet:     true,
+	http.MethodHead:    false,
+	http.MethodPost:    false,
+	http.MethodPut:     false,
+	http.MethodPatch:   false,
+	http.MethodDelete:  false,
+	http.MethodConnect: false,
+	http.MethodOptions: false,
+	http.MethodTrace:   false,
+}
+
 // Run handles any handler initialization
 func (h *HealthHandler) Run(stopCh <-chan struct{}) error {
 	h.logger.Info().Msg("HealthHandler: run")
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
+		if methodEnabled[r.Method] {
 			fmt.Fprintf(w, "Health method %s\n", r.Method)
-		case http.MethodHead:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodPost:
-			if h.put {
-				fmt.Fprintf(w, "Health method %s\n", r.Method)
-			} else {
-				w.WriteHeader(http.StatusMethodNotAllowed)
-			}
-		case http.MethodPut:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodPatch:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodDelete:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodConnect:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodOptions:
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		case http.MethodTrace:
+		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
@@ -84,7 +76,7 @@ func (h *HealthHandler) ObjectDeleted(obj interface{}) {
 func (h *HealthHandler) ObjectUpdated(obj interface{}) {
 	h.logger.Info().Msg("HealthHandler: object updated")
 
-	h.put = obj.(*v1.Health).Spec.Switch
+	methodEnabled[obj.(*v1.Health).Spec.Action] = obj.(*v1.Health).Spec.Switch
 
-	h.logger.Info().Msgf("put on/off: %v", h.put)
+	h.logger.Info().Msgf("Method %s %t", obj.(*v1.Health).Spec.Action, obj.(*v1.Health).Spec.Switch)
 }
