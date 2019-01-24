@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -12,6 +13,10 @@ import (
 	"k8s.io/client-go/util/workqueue"
 )
 
+const (
+	maxRetries int = 5
+)
+
 // Controller struct defines how a controller should encapsulate
 // logging, client connectivity, informing (list and watching)
 // queueing, and handling of resource changes
@@ -20,15 +25,15 @@ type Controller struct {
 	clientset kubernetes.Interface
 	queue     workqueue.RateLimitingInterface
 	informer  cache.SharedIndexInformer
+	server    *http.Server
 	handler   Handler
 }
 
 // Run is the main path of execution for the controller loop
 func (c *Controller) Run(stopCh <-chan struct{}) {
-	// handle a panic with logging and exiting
+	// don't let panics crash the process
 	defer utilruntime.HandleCrash()
-	// ignore new items in the queue but when all goroutines
-	// have completed existing items then shutdown
+	// make sure the work queue is quit which will trigger workers to end
 	defer c.queue.ShutDown()
 
 	c.logger.Info().Msg("Controller.Run: initiating")
@@ -36,14 +41,19 @@ func (c *Controller) Run(stopCh <-chan struct{}) {
 	// run the informer to start listing and watching resources
 	go c.informer.Run(stopCh)
 
-	// do the initial synchronization (one time) to populate resources
+	// run http router
+	go c.handler.Run(stopCh)
+
+	// wait for the caches to synchronize before starting the worker
 	if !cache.WaitForCacheSync(stopCh, c.HasSynced) {
 		utilruntime.HandleError(fmt.Errorf("Error syncing cache"))
 		return
 	}
+
 	c.logger.Info().Msg("Controller.Run: cache sync complete")
 
-	// run the runWorker method every second with a stop channel
+	// runWorker will loop until "something bad" happens.  The .Until will
+	// then rekick the worker after one second
 	wait.Until(c.runWorker, time.Second, stopCh)
 }
 
@@ -57,9 +67,9 @@ func (c *Controller) HasSynced() bool {
 func (c *Controller) runWorker() {
 	c.logger.Info().Msg("Controller.runWorker: starting")
 
-	// invoke processNextItem to fetch and consume the next change
-	// to a watched or listed resource
+	// processNextWorkItem will automatically wait until there's work available
 	for c.processNextItem() {
+		// continue looping
 		c.logger.Info().Msg("Controller.runWorker: processing next item")
 	}
 
@@ -72,61 +82,50 @@ func (c *Controller) runWorker() {
 func (c *Controller) processNextItem() bool {
 	c.logger.Info().Msg("Controller.processNextItem: start")
 
-	// fetch the next item (blocking) from the queue to process or
-	// if a shutdown is requested then return out of this to stop
-	// processing
+	// pull the next work item from queue.  It should be a key we use to lookup
+	// something in a cache
 	key, quit := c.queue.Get()
-
-	// stop the worker loop from running as this indicates we
-	// have sent a shutdown message that the queue has indicated
-	// from the Get method
 	if quit {
 		return false
 	}
 
+	// you always have to indicate to the queue that you've completed a piece of
+	// work
 	defer c.queue.Done(key)
 
-	// assert the string out of the key (format `namespace/name`)
-	keyRaw := key.(string)
-
-	// take the string key and get the object out of the indexer
-	//
-	// item will contain the complex object for the resource and
-	// exists is a bool that'll indicate whether or not the
-	// resource was created (true) or deleted (false)
-	//
-	// if there is an error in getting the key from the index
-	// then we want to retry this particular queue key a certain
-	// number of times (5 here) before we forget the queue key
-	// and throw an error
-	item, exists, err := c.informer.GetIndexer().GetByKey(keyRaw)
-	if err != nil {
-		if c.queue.NumRequeues(key) < 5 {
-			c.logger.Error().Err(err).Msgf("Controller.processNextItem: Failed processing item with key %s with error %v, retrying", key, err)
-			c.queue.AddRateLimited(key)
-		} else {
-			c.logger.Error().Err(err).Msgf("Controller.processNextItem: Failed processing item with key %s with error %v, no more retries", key, err)
-			c.queue.Forget(key)
-			utilruntime.HandleError(err)
-		}
-	}
-
-	// if the item doesn't exist then it was deleted and we need to fire off the handler's
-	// ObjectDeleted method. but if the object does exist that indicates that the object
-	// was created (or updated) so run the ObjectCreated method
-	//
-	// after both instances, we want to forget the key from the queue, as this indicates
-	// a code path of successful queue key processing
-	if !exists {
-		c.logger.Info().Msgf("Controller.processNextItem: object deleted detected: %s", keyRaw)
-		c.handler.ObjectDeleted(item)
+	// do your work on the key.
+	err := c.processItem(key.(string))
+	if err == nil {
+		// No error, tell the queue to stop tracking history
 		c.queue.Forget(key)
+	} else if c.queue.NumRequeues(key) < maxRetries {
+		c.logger.Error().Err(err).Msgf("Error processing %s (will retry): %v", key, err)
+		// requeue the item to work on later
+		c.queue.AddRateLimited(key)
 	} else {
-		c.logger.Info().Msgf("Controller.processNextItem: object created detected: %s", keyRaw)
-		c.handler.ObjectCreated(item)
+		// err != nil and too many retries
+		c.logger.Error().Err(err).Msgf("Error processing %s (giving up): %v", key, err)
 		c.queue.Forget(key)
+		utilruntime.HandleError(err)
 	}
 
-	// keep the worker loop running by returning true
 	return true
+}
+
+func (c *Controller) processItem(key string) error {
+	c.logger.Info().Msgf("Processing change to Pod %s", key)
+
+	obj, exists, err := c.informer.GetIndexer().GetByKey(key)
+	if err != nil {
+		return fmt.Errorf("Error fetching object with key %s from store: %v", key, err)
+	}
+
+	if !exists {
+		c.handler.ObjectDeleted(obj)
+		return nil
+	}
+
+	c.handler.ObjectUpdated(obj)
+
+	return nil
 }
