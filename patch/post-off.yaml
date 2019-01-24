@@ -3,5 +3,5 @@ kind: Health
 metadata:
   name: example-health
 spec:
-  action: PUT
+  action: POST
   switch: false

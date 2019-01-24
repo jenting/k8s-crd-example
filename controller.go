@@ -113,7 +113,7 @@ func (c *Controller) processNextItem() bool {
 }
 
 func (c *Controller) processItem(key string) error {
-	c.logger.Info().Msgf("Processing change to Pod %s", key)
+	c.logger.Info().Msgf("Processing change %s", key)
 
 	obj, exists, err := c.informer.GetIndexer().GetByKey(key)
 	if err != nil {

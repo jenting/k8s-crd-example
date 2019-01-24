@@ -1,10 +1,11 @@
 [environments]
   [environments.development]
-    name = "gin"
+    name = "go"
     namespace = "default"
     wait = true
     watch = false
     watch-delay = 2
-    auto-connect = false
+    auto-connect = true
+    override-ports = ["8888:80"]
     dockerfile = "Dockerfile"
     chart = "charts/go"
