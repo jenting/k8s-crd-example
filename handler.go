@@ -26,7 +26,6 @@ type HealthHandler struct {
 }
 
 var methodEnabled = map[string]bool{
-	http.MethodGet:     true,
 	http.MethodHead:    false,
 	http.MethodPost:    false,
 	http.MethodPut:     false,
@@ -37,17 +36,41 @@ var methodEnabled = map[string]bool{
 	http.MethodTrace:   false,
 }
 
+// Handle is a function that can be registered to a route to handle HTTP requests.
+type Handle func(http.ResponseWriter, *http.Request)
+
+func healthHandlerFunc() Handle {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if http.MethodGet == r.Method {
+			fmt.Fprintf(w, "Health method %s\n", r.Method)
+		} else {
+			if methodEnabled[r.Method] {
+				fmt.Fprintf(w, "Health method %s\n", r.Method)
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+			}
+		}
+	}
+}
+
 // Run handles any handler initialization
 func (h *HealthHandler) Run(stopCh <-chan struct{}) error {
 	h.logger.Info().Msg("HealthHandler: run")
 
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		if methodEnabled[r.Method] {
-			fmt.Fprintf(w, "Health method %s\n", r.Method)
-		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
+	http.HandleFunc("/health", healthHandlerFunc())
+
+	go func() {
+		<-stopCh
+
+		// Gracefully shutdown server.
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := h.server.Shutdown(ctx); err != nil {
+			h.logger.Info().Msg("http server shutdown failed")
 		}
-	})
+		h.logger.Info().Msg("server down")
+	}()
 
 	if err := h.server.ListenAndServe(); err != nil {
 		h.logger.Error().Err(err).Msgf("http server error")
@@ -61,15 +84,9 @@ func (h *HealthHandler) Run(stopCh <-chan struct{}) error {
 func (h *HealthHandler) ObjectDeleted(obj interface{}) {
 	h.logger.Info().Msg("HealthHandler: object deleted")
 
-	// Gracefully shutdown server.
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := h.server.Shutdown(ctx); err != nil {
-		h.logger.Info().Msg("http server shutdown failed")
+	for k := range methodEnabled {
+		methodEnabled[k] = false
 	}
-
-	h.logger.Info().Msg("server down")
 }
 
 // ObjectUpdated is called when an object is updated
