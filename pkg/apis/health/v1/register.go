@@ -5,7 +5,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/jenting/k8s-crd/pkg/apis/health"
+	"github.com/jenting/k8s-crd-example/pkg/apis/health"
 )
 
 // SchemeGroupVersion is the identifier for the API which includes

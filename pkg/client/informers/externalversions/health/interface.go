@@ -19,8 +19,8 @@ limitations under the License.
 package jenting
 
 import (
-	v1 "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/health/v1"
-	internalinterfaces "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
+	v1 "github.com/jenting/k8s-crd-example/pkg/client/informers/externalversions/health/v1"
+	internalinterfaces "github.com/jenting/k8s-crd-example/pkg/client/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.

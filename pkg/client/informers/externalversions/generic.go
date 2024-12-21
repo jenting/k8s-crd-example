@@ -21,7 +21,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
+	v1 "github.com/jenting/k8s-crd-example/pkg/apis/health/v1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )

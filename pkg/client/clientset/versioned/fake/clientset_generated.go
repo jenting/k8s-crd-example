@@ -19,9 +19,9 @@ limitations under the License.
 package fake
 
 import (
-	clientset "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
-	jentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
-	fakejentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1/fake"
+	clientset "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned"
+	jentingv1 "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned/typed/health/v1"
+	fakejentingv1 "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned/typed/health/v1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

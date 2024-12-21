@@ -1,6 +1,6 @@
 {
     "go.formatFlags": [
         "-local",
-        "github.com/jenting/k8s-crd"
+        "github.com/jenting/k8s-crd-example"
     ]
 }

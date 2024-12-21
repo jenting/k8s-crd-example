@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
+	v1 "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned/typed/health/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )

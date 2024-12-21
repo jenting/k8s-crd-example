@@ -19,10 +19,11 @@ limitations under the License.
 package versioned
 
 import (
-	jentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
+
+	jentingv1 "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned/typed/health/v1"
 )
 
 type Interface interface {

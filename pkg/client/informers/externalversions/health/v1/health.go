@@ -21,10 +21,10 @@ package v1
 import (
 	time "time"
 
-	healthv1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
-	versioned "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
-	internalinterfaces "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
-	v1 "github.com/jenting/k8s-crd/pkg/client/listers/health/v1"
+	healthv1 "github.com/jenting/k8s-crd-example/pkg/apis/health/v1"
+	versioned "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/jenting/k8s-crd-example/pkg/client/informers/externalversions/internalinterfaces"
+	v1 "github.com/jenting/k8s-crd-example/pkg/client/listers/health/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"

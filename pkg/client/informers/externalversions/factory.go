@@ -23,9 +23,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
-	health "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/health"
-	internalinterfaces "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
+	versioned "github.com/jenting/k8s-crd-example/pkg/client/clientset/versioned"
+	health "github.com/jenting/k8s-crd-example/pkg/client/informers/externalversions/health"
+	internalinterfaces "github.com/jenting/k8s-crd-example/pkg/client/informers/externalversions/internalinterfaces"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	jentingv1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
+	jentingv1 "github.com/jenting/k8s-crd-example/pkg/apis/health/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
