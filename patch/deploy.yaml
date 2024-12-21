@@ -1,4 +1,4 @@
-apiVersion: hsiaoairplane.io/v1
+apiVersion: jenting.io/v1
 kind: Health
 metadata:
   name: example-health

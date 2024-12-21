@@ -1,4 +1,4 @@
-module github.com/hsiaoairplane/k8s-crd
+module github.com/jenting/k8s-crd
 
 go 1.23.2
 
