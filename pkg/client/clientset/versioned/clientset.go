@@ -19,7 +19,7 @@ limitations under the License.
 package versioned
 
 import (
-	hsiaoairplanev1 "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
+	jentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -27,27 +27,27 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	HsiaoairplaneV1() hsiaoairplanev1.HsiaoairplaneV1Interface
+	jentingV1() jentingv1.jentingV1Interface
 	// Deprecated: please explicitly pick a version if possible.
-	Hsiaoairplane() hsiaoairplanev1.HsiaoairplaneV1Interface
+	jenting() jentingv1.jentingV1Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	hsiaoairplaneV1 *hsiaoairplanev1.HsiaoairplaneV1Client
+	jentingV1 *jentingv1.jentingV1Client
 }
 
-// HsiaoairplaneV1 retrieves the HsiaoairplaneV1Client
-func (c *Clientset) HsiaoairplaneV1() hsiaoairplanev1.HsiaoairplaneV1Interface {
-	return c.hsiaoairplaneV1
+// jentingV1 retrieves the jentingV1Client
+func (c *Clientset) jentingV1() jentingv1.jentingV1Interface {
+	return c.jentingV1
 }
 
-// Deprecated: Hsiaoairplane retrieves the default version of HsiaoairplaneClient.
+// Deprecated: jenting retrieves the default version of jentingClient.
 // Please explicitly pick a version.
-func (c *Clientset) Hsiaoairplane() hsiaoairplanev1.HsiaoairplaneV1Interface {
-	return c.hsiaoairplaneV1
+func (c *Clientset) jenting() jentingv1.jentingV1Interface {
+	return c.jentingV1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -66,7 +66,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.hsiaoairplaneV1, err = hsiaoairplanev1.NewForConfig(&configShallowCopy)
+	cs.jentingV1, err = jentingv1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.hsiaoairplaneV1 = hsiaoairplanev1.NewForConfigOrDie(c)
+	cs.jentingV1 = jentingv1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -91,7 +91,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.hsiaoairplaneV1 = hsiaoairplanev1.New(c)
+	cs.jentingV1 = jentingv1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

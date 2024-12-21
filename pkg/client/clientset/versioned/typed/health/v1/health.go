@@ -21,8 +21,8 @@ package v1
 import (
 	"time"
 
-	v1 "github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
-	scheme "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/scheme"
+	v1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
+	scheme "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/scheme"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -55,7 +55,7 @@ type healths struct {
 }
 
 // newHealths returns a Healths
-func newHealths(c *HsiaoairplaneV1Client, namespace string) *healths {
+func newHealths(c *jentingV1Client, namespace string) *healths {
 	return &healths{
 		client: c.RESTClient(),
 		ns:     namespace,

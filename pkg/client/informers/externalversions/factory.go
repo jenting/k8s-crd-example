@@ -23,9 +23,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
-	health "github.com/hsiaoairplane/k8s-crd/pkg/client/informers/externalversions/health"
-	internalinterfaces "github.com/hsiaoairplane/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
+	versioned "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
+	health "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/health"
+	internalinterfaces "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Hsiaoairplane() health.Interface
+	jenting() health.Interface
 }
 
-func (f *sharedInformerFactory) Hsiaoairplane() health.Interface {
+func (f *sharedInformerFactory) jenting() health.Interface {
 	return health.New(f, f.namespace, f.tweakListOptions)
 }

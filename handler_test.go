@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
+	"github.com/jenting/k8s-crd/pkg/apis/health/v1"
 )
 
 func Test_testDefaultMethod(t *testing.T) {

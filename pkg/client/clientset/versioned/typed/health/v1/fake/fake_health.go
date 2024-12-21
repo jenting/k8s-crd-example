@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	healthv1 "github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
+	healthv1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -30,13 +30,13 @@ import (
 
 // FakeHealths implements HealthInterface
 type FakeHealths struct {
-	Fake *FakeHsiaoairplaneV1
+	Fake *FakejentingV1
 	ns   string
 }
 
-var healthsResource = schema.GroupVersionResource{Group: "hsiaoairplane.io", Version: "v1", Resource: "healths"}
+var healthsResource = schema.GroupVersionResource{Group: "jenting.io", Version: "v1", Resource: "healths"}
 
-var healthsKind = schema.GroupVersionKind{Group: "hsiaoairplane.io", Version: "v1", Kind: "Health"}
+var healthsKind = schema.GroupVersionKind{Group: "jenting.io", Version: "v1", Kind: "Health"}
 
 // Get takes name of the health, and returns the corresponding health object, and an error if there is any.
 func (c *FakeHealths) Get(name string, options v1.GetOptions) (result *healthv1.Health, err error) {

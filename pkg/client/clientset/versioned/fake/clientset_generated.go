@@ -19,9 +19,9 @@ limitations under the License.
 package fake
 
 import (
-	clientset "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
-	hsiaoairplanev1 "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
-	fakehsiaoairplanev1 "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/typed/health/v1/fake"
+	clientset "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
+	jentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
+	fakejentingv1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -71,12 +71,12 @@ func (c *Clientset) Discovery() discovery.DiscoveryInterface {
 
 var _ clientset.Interface = &Clientset{}
 
-// HsiaoairplaneV1 retrieves the HsiaoairplaneV1Client
-func (c *Clientset) HsiaoairplaneV1() hsiaoairplanev1.HsiaoairplaneV1Interface {
-	return &fakehsiaoairplanev1.FakeHsiaoairplaneV1{Fake: &c.Fake}
+// jentingV1 retrieves the jentingV1Client
+func (c *Clientset) jentingV1() jentingv1.jentingV1Interface {
+	return &fakejentingv1.FakejentingV1{Fake: &c.Fake}
 }
 
-// Hsiaoairplane retrieves the HsiaoairplaneV1Client
-func (c *Clientset) Hsiaoairplane() hsiaoairplanev1.HsiaoairplaneV1Interface {
-	return &fakehsiaoairplanev1.FakeHsiaoairplaneV1{Fake: &c.Fake}
+// jenting retrieves the jentingV1Client
+func (c *Clientset) jenting() jentingv1.jentingV1Interface {
+	return &fakejentingv1.FakejentingV1{Fake: &c.Fake}
 }

@@ -8,7 +8,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
+	"github.com/jenting/k8s-crd/pkg/apis/health/v1"
 )
 
 // Handler interface contains the methods that are required

@@ -21,10 +21,10 @@ package v1
 import (
 	time "time"
 
-	healthv1 "github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
-	versioned "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
-	internalinterfaces "github.com/hsiaoairplane/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
-	v1 "github.com/hsiaoairplane/k8s-crd/pkg/client/listers/health/v1"
+	healthv1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
+	versioned "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/internalinterfaces"
+	v1 "github.com/jenting/k8s-crd/pkg/client/listers/health/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -61,13 +61,13 @@ func NewFilteredHealthInformer(client versioned.Interface, namespace string, res
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.HsiaoairplaneV1().Healths(namespace).List(options)
+				return client.jentingV1().Healths(namespace).List(options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.HsiaoairplaneV1().Healths(namespace).Watch(options)
+				return client.jentingV1().Healths(namespace).Watch(options)
 			},
 		},
 		&healthv1.Health{},

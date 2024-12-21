@@ -19,22 +19,22 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
+	v1 "github.com/jenting/k8s-crd/pkg/client/clientset/versioned/typed/health/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeHsiaoairplaneV1 struct {
+type FakejentingV1 struct {
 	*testing.Fake
 }
 
-func (c *FakeHsiaoairplaneV1) Healths(namespace string) v1.HealthInterface {
+func (c *FakejentingV1) Healths(namespace string) v1.HealthInterface {
 	return &FakeHealths{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeHsiaoairplaneV1) RESTClient() rest.Interface {
+func (c *FakejentingV1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

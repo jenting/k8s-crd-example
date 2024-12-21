@@ -1,4 +1,4 @@
 // +k8s:deepcopy-gen=package
-// +groupName=hsiaoairplane.io
+// +groupName=jenting.io
 
 package v1

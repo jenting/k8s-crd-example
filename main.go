@@ -13,8 +13,8 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/workqueue"
 
-	clientset "github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned"
-	healthInformerV1 "github.com/hsiaoairplane/k8s-crd/pkg/client/informers/externalversions/health/v1"
+	clientset "github.com/jenting/k8s-crd/pkg/client/clientset/versioned"
+	healthInformerV1 "github.com/jenting/k8s-crd/pkg/client/informers/externalversions/health/v1"
 )
 
 var (

@@ -19,28 +19,28 @@ limitations under the License.
 package v1
 
 import (
-	v1 "github.com/hsiaoairplane/k8s-crd/pkg/apis/health/v1"
-	"github.com/hsiaoairplane/k8s-crd/pkg/client/clientset/versioned/scheme"
+	v1 "github.com/jenting/k8s-crd/pkg/apis/health/v1"
+	"github.com/jenting/k8s-crd/pkg/client/clientset/versioned/scheme"
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	rest "k8s.io/client-go/rest"
 )
 
-type HsiaoairplaneV1Interface interface {
+type jentingV1Interface interface {
 	RESTClient() rest.Interface
 	HealthsGetter
 }
 
-// HsiaoairplaneV1Client is used to interact with features provided by the hsiaoairplane.io group.
-type HsiaoairplaneV1Client struct {
+// jentingV1Client is used to interact with features provided by the jenting.io group.
+type jentingV1Client struct {
 	restClient rest.Interface
 }
 
-func (c *HsiaoairplaneV1Client) Healths(namespace string) HealthInterface {
+func (c *jentingV1Client) Healths(namespace string) HealthInterface {
 	return newHealths(c, namespace)
 }
 
-// NewForConfig creates a new HsiaoairplaneV1Client for the given config.
-func NewForConfig(c *rest.Config) (*HsiaoairplaneV1Client, error) {
+// NewForConfig creates a new jentingV1Client for the given config.
+func NewForConfig(c *rest.Config) (*jentingV1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -49,12 +49,12 @@ func NewForConfig(c *rest.Config) (*HsiaoairplaneV1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &HsiaoairplaneV1Client{client}, nil
+	return &jentingV1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new HsiaoairplaneV1Client for the given config and
+// NewForConfigOrDie creates a new jentingV1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *HsiaoairplaneV1Client {
+func NewForConfigOrDie(c *rest.Config) *jentingV1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -62,9 +62,9 @@ func NewForConfigOrDie(c *rest.Config) *HsiaoairplaneV1Client {
 	return client
 }
 
-// New creates a new HsiaoairplaneV1Client for the given RESTClient.
-func New(c rest.Interface) *HsiaoairplaneV1Client {
-	return &HsiaoairplaneV1Client{c}
+// New creates a new jentingV1Client for the given RESTClient.
+func New(c rest.Interface) *jentingV1Client {
+	return &jentingV1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -82,7 +82,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *HsiaoairplaneV1Client) RESTClient() rest.Interface {
+func (c *jentingV1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}
