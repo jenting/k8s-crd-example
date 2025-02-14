@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.10.0
-	k8s.io/apimachinery v0.32.1
+	k8s.io/apimachinery v0.32.2
 	k8s.io/client-go v0.32.1
 )
 
