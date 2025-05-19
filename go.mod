@@ -1,12 +1,13 @@
 module github.com/jenting/k8s-crd-example
 
-go 1.23.2
+go 1.24.0
+
 toolchain go1.24.1
 
 require (
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.10.0
-	k8s.io/apimachinery v0.33.0
+	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.0
 )
 
