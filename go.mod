@@ -3,7 +3,7 @@ module github.com/jenting/k8s-crd-example
 go 1.25.0
 
 require (
-	github.com/rs/zerolog v1.35.0
+	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
 	k8s.io/apimachinery v0.35.4
 	k8s.io/client-go v0.35.4
